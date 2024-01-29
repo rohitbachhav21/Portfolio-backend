@@ -6,12 +6,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 require('dotenv').config();
-const port = process.env.PORT || 8000;
+// const port = process.env.PORT || 8000;
+const port = 5000;
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 
-;
+
 
 const uri = `mongodb+srv://${process.env.REACT_APP_USERNAME}:${process.env.REACT_APP_PASSWORD}@cluster1.aegxczx.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -28,11 +29,19 @@ async function run() {
 
     const userCollection = client.db("database").collection("user"); //this is user collection
 
+    
+    app.get("/user", async (req, res) => {
+      const result = await userCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post("/user", async (req, res) => {
         const user = req.body;
         const result = await userCollection.insertOne(user);
         res.send(result);
       });
+
+      
       
     } catch (error) {
       console.log("An error occurred:", error);
